@@ -7,6 +7,6 @@ class TodoController extends GetxController {
         .collection("todos")
         .doc()
         .set({"task": task, "isDone": isDone},
-        SetOptions(merge: true));
+        SetOptions(merge: true)).then((value) => Get.back());
   }
 }
