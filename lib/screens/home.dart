@@ -35,7 +35,27 @@ class _HomeState extends State<Home> {
                 itemCount: todoController.taskList.length,
                   itemBuilder: (context, index) {
                     return ListTile (
-                      title: Text(todoController.taskList[index].task)
+                      title: Text(todoController.taskList[index].task),
+                      trailing: SizedBox(
+                        width: 150,
+                        child: Row(
+                          children: [
+                            IconButton(onPressed: () => print ("edit"),
+                              icon: const Icon(Icons.edit),
+                              color: Colors.blue,
+                            ),
+                            IconButton(onPressed: () => print ("delete"),
+                              icon: const Icon(Icons.delete),
+                              color: Colors.red,
+                            ),
+                            IconButton(onPressed: () => print ("markdone"),
+                              icon: const Icon(Icons.check_box_outline_blank_outlined),
+                              color: Colors.green,
+                            )
+
+                          ],
+                        )
+                      ),
                     );
                   }
               ),
