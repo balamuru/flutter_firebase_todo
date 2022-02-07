@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
           return Scaffold(
             body: Center(
               child: todoController.isLoading
-                  ? Text('is loading ..') //print statement
+                  ? Text('loading tasks ..') //print statement
                   : ListView.builder(
                       itemCount: todoController.taskList.length,
                       itemBuilder: (context, index) {
