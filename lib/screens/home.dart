@@ -29,65 +29,87 @@ class _HomeState extends State<Home> {
 
           return Scaffold(
             body: Center(
-              child: todoController.isLoading ?
-              Text('is loading ..') :
-              ListView.builder(
-                itemCount: todoController.taskList.length,
+              child: todoController.isLoading
+                  ? Text('is loading ..') //print statement
+                  : ListView.builder(
+                  itemCount: todoController.taskList.length,
                   itemBuilder: (context, index) {
-                    return ListTile (
+                    return ListTile(
                       title: Text(todoController.taskList[index].task),
                       trailing: SizedBox(
-                        width: 150,
-                        child: Row(
-                          children: [
-                            IconButton(onPressed: () => print ("edit"),
-                              icon: const Icon(Icons.edit),
-                              color: Colors.blue,
-                            ),
-                            IconButton(onPressed: () => print ("delete"),
-                              icon: const Icon(Icons.delete),
-                              color: Colors.red,
-                            ),
-                            IconButton(onPressed: () => print ("markdone"),
-                              icon: const Icon(Icons.check_box_outline_blank_outlined),
-                              color: Colors.green,
-                            )
+                          width: 150,
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () async =>
+                                await addTaskDialog(
+                                    todoController,
+                                    'Update Todo',
+                                    todoController.taskList[index].id,
+                                    todoController.taskList[index].task
+                                ),
 
-                          ],
-                        )
-                      ),
+                                icon: const Icon(Icons.edit),
+                                color: Colors.blue,
+                              ),
+                              IconButton(
+                                onPressed: () => print("TODO delete"),
+                                icon: const Icon(Icons.delete),
+                                color: Colors.red,
+                              ),
+                              IconButton(
+                                onPressed: () => print("TODO markdone"),
+                                icon: const Icon(
+                                    Icons.check_box_outline_blank_outlined),
+                                color: Colors.green,
+                              )
+                            ],
+                          )),
                     );
-                  }
-              ),
+                  }),
             ),
             floatingActionButton: FloatingActionButton(
               child: const Icon(Icons.add),
-              onPressed: () => Get.defaultDialog(
-                title: 'Add Todo',
-                content: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _taskController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Cannot be empty';
-                          }
-                          return null;
-                        },
-                      ),
-                      ElevatedButton(
-                        onPressed: () async => await todoController.addTodo(
-                            _taskController.text.trim(), false),
-                        child: const Text('Save'),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+              onPressed: () async =>
+              await addTaskDialog(todoController, 'Add Todo', '', ''),
             ),
           );
         });
+  }
+
+  addTaskDialog(TodoController todoController, String title, String id,
+      String task) async {
+    if (task.isNotEmpty) {
+      _taskController.text = task;
+    }
+
+    Get.defaultDialog(
+      title: title,
+      content: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+          TextFormField(
+          controller: _taskController,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Cannot be empty';
+            }
+            return null;
+          },
+        ),
+        ElevatedButton(
+            onPressed: () async {
+              print("####### " +_taskController.text.trim());
+              await todoController.addTodo(
+                  _taskController.text.trim(), false, id);
+              _taskController.clear();
+            },
+            child: const Text('Save'),
+      )
+      ],
+    ),)
+    ,
+    );
   }
 }

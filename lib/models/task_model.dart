@@ -1,7 +1,9 @@
 class TaskModel {
+  String id;
   String task;
   bool isDone;
 
-  TaskModel(this.task, this.isDone);
+
+  TaskModel(this.id, this.task, this.isDone);
 
 }

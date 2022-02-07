@@ -6,8 +6,10 @@ class TodoController extends GetxController {
   var isLoading = false;
   var taskList = <TaskModel>[];
 
-  Future<void> addTodo(String task, bool isDone) async {
-    await FirebaseFirestore.instance.collection("todos").doc().set(
+  Future<void> addTodo(String task, bool isDone, String id) async {
+    await FirebaseFirestore.instance.collection("todos")
+        .doc(id != '' ? id : null)
+        .set(
         {"task": task, "isDone": isDone},
         SetOptions(merge: true)).then((value) => Get.back());
   }
@@ -21,12 +23,14 @@ class TodoController extends GetxController {
 
       taskList.clear();
       for (var doc in taskSnapshot.docs) {
-            taskList.add(TaskModel(doc["task"], doc["isDone"]));
+            //note that we use doc.id to indicate an integral part of the document
+            //and not an attribute
+            taskList.add(TaskModel(doc.id, doc["task"], doc["isDone"]));
           }
       isLoading = false;
       update();
     } catch (e) {
-      print(e);
+      print(e.toString());
     }
   }
 }
