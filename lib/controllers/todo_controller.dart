@@ -6,7 +6,7 @@ class TodoController extends GetxController {
   var isLoading = false;
   var taskList = <TaskModel>[];
 
-  Future<void> addTodo(String task, bool isDone, String id) async {
+  Future<void> addOrEditTodo(String task, bool isDone, String id) async {
     await FirebaseFirestore.instance.collection("todos")
         .doc(id != '' ? id : null)
         .set(
@@ -41,11 +41,11 @@ class TodoController extends GetxController {
         .delete();
   }
 
-  Future<void> markDoneTask(String id) async{
+  Future<void> setDoneTask(String id, bool isDone) async{
     await FirebaseFirestore.instance.collection("todos")
         .doc(id != '' ? id : null)
         .set(
-        { "isDone": true},
+        { "isDone": isDone},
         SetOptions(merge: true)).then((value) => getData());
   }
 }

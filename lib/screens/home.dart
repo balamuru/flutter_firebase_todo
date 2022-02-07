@@ -35,19 +35,42 @@ class _HomeState extends State<Home> {
                       itemCount: todoController.taskList.length,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title: Text(todoController.taskList[index].task),
+                          leading: Checkbox(
+                            value: todoController.taskList[index].isDone,
+                            onChanged: (value) {
+                               todoController.setDoneTask(
+                                  todoController.taskList[index].id, !todoController.taskList[index].isDone);
+                            },
+                            
+                          ),
+                          
+                          title: Text(
+                              todoController.taskList[index].task,
+                          style: TextStyle (
+                              decoration: todoController.taskList[index].isDone ?
+                              TextDecoration.lineThrough :TextDecoration.none,
+                            color: todoController.taskList[index].isDone ? Colors.grey : Colors.black
+                          ),
+                          ),
+
                           trailing: SizedBox(
                               width: 150,
                               child: Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () async => await addTaskDialog(
-                                        todoController,
-                                        'Update Todo',
-                                        todoController.taskList[index].id,
-                                        todoController.taskList[index].task),
+                                    onPressed: () async {
+                                      if (!todoController
+                                          .taskList[index].isDone) {
+                                        await addOrEditTaskDialog(
+                                            todoController,
+                                            'Update Todo',
+                                            todoController.taskList[index].id,
+                                            todoController
+                                                .taskList[index].task);
+                                      }
+                                    },
                                     icon: const Icon(Icons.edit),
-                                    color: Colors.blue,
+                                    color: todoController.taskList[index].isDone ? Colors.grey : Colors.blue,
                                   ),
                                   IconButton(
                                     onPressed: () => todoController.deleteTask(
@@ -55,18 +78,6 @@ class _HomeState extends State<Home> {
                                     icon: const Icon(Icons.delete),
                                     color: Colors.red,
                                   ),
-                                  IconButton(
-                                    onPressed: () async =>
-                                        await todoController.markDoneTask(
-                                            todoController.taskList[index].id),
-                                    icon: todoController
-                                                .taskList[index].isDone ==
-                                            true
-                                        ? const Icon(Icons.check_box_outlined)
-                                        : const Icon(
-                                            Icons.check_box_outline_blank),
-                                    color: Colors.green,
-                                  )
                                 ],
                               )),
                         );
@@ -75,13 +86,13 @@ class _HomeState extends State<Home> {
             floatingActionButton: FloatingActionButton(
               child: const Icon(Icons.add),
               onPressed: () async =>
-                  await addTaskDialog(todoController, 'Add Todo', '', ''),
+                  await addOrEditTaskDialog(todoController, 'Add Todo', '', ''),
             ),
           );
         });
   }
 
-  addTaskDialog(TodoController todoController, String title, String id,
+  addOrEditTaskDialog(TodoController todoController, String title, String id,
       String task) async {
     if (task.isNotEmpty) {
       _taskController.text = task;
@@ -104,7 +115,7 @@ class _HomeState extends State<Home> {
             ),
             ElevatedButton(
               onPressed: () async {
-                await todoController.addTodo(
+                await todoController.addOrEditTodo(
                     _taskController.text.trim(), false, id);
                 _taskController.clear();
                 Get.back();
