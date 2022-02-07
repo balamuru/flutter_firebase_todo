@@ -11,7 +11,7 @@ class TodoController extends GetxController {
         .doc(id != '' ? id : null)
         .set(
         {"task": task, "isDone": isDone},
-        SetOptions(merge: true)).then((value) => Get.back());
+        SetOptions(merge: true)).then((value) => getData());
   }
 
   Future<void> getData() async {
@@ -43,9 +43,9 @@ class TodoController extends GetxController {
 
   Future<void> markDoneTask(String id) async{
     await FirebaseFirestore.instance.collection("todos")
-        .doc(id)
+        .doc(id != '' ? id : null)
         .set(
-        {"isDone": true},
-        SetOptions(merge: true)).then((value) => Get.back());
+        { "isDone": true},
+        SetOptions(merge: true)).then((value) => getData());
   }
 }

@@ -107,6 +107,7 @@ class _HomeState extends State<Home> {
                 await todoController.addTodo(
                     _taskController.text.trim(), false, id);
                 _taskController.clear();
+                Get.back();
               },
               child: const Text('Save'),
             )
