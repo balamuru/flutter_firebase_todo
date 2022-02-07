@@ -33,4 +33,19 @@ class TodoController extends GetxController {
       print(e.toString());
     }
   }
+
+  void deleteTask(String id) {
+    FirebaseFirestore.instance
+        .collection("todos")
+        .doc(id)
+        .delete();
+  }
+
+  Future<void> markDoneTask(String id) async{
+    await FirebaseFirestore.instance.collection("todos")
+        .doc(id)
+        .set(
+        {"isDone": true},
+        SetOptions(merge: true)).then((value) => Get.back());
+  }
 }

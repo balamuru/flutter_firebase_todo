@@ -53,12 +53,12 @@ class _HomeState extends State<Home> {
                                 color: Colors.blue,
                               ),
                               IconButton(
-                                onPressed: () => print("TODO delete"),
+                                onPressed: () => todoController.deleteTask(todoController.taskList[index].id),
                                 icon: const Icon(Icons.delete),
                                 color: Colors.red,
                               ),
                               IconButton(
-                                onPressed: () => print("TODO markdone"),
+                                onPressed: () => todoController.markDoneTask(todoController.taskList[index].id),
                                 icon: const Icon(
                                     Icons.check_box_outline_blank_outlined),
                                 color: Colors.green,
@@ -100,7 +100,6 @@ class _HomeState extends State<Home> {
         ),
         ElevatedButton(
             onPressed: () async {
-              print("####### " +_taskController.text.trim());
               await todoController.addTodo(
                   _taskController.text.trim(), false, id);
               _taskController.clear();
