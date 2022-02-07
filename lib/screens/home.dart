@@ -32,46 +32,50 @@ class _HomeState extends State<Home> {
               child: todoController.isLoading
                   ? Text('is loading ..') //print statement
                   : ListView.builder(
-                  itemCount: todoController.taskList.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(todoController.taskList[index].task),
-                      trailing: SizedBox(
-                          width: 150,
-                          child: Row(
-                            children: [
-                              IconButton(
-                                onPressed: () async =>
-                                await addTaskDialog(
-                                    todoController,
-                                    'Update Todo',
-                                    todoController.taskList[index].id,
-                                    todoController.taskList[index].task
-                                ),
-
-                                icon: const Icon(Icons.edit),
-                                color: Colors.blue,
-                              ),
-                              IconButton(
-                                onPressed: () => todoController.deleteTask(todoController.taskList[index].id),
-                                icon: const Icon(Icons.delete),
-                                color: Colors.red,
-                              ),
-                              IconButton(
-                                onPressed: () => todoController.markDoneTask(todoController.taskList[index].id),
-                                icon: const Icon(
-                                    Icons.check_box_outline_blank_outlined),
-                                color: Colors.green,
-                              )
-                            ],
-                          )),
-                    );
-                  }),
+                      itemCount: todoController.taskList.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(todoController.taskList[index].task),
+                          trailing: SizedBox(
+                              width: 150,
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () async => await addTaskDialog(
+                                        todoController,
+                                        'Update Todo',
+                                        todoController.taskList[index].id,
+                                        todoController.taskList[index].task),
+                                    icon: const Icon(Icons.edit),
+                                    color: Colors.blue,
+                                  ),
+                                  IconButton(
+                                    onPressed: () => todoController.deleteTask(
+                                        todoController.taskList[index].id),
+                                    icon: const Icon(Icons.delete),
+                                    color: Colors.red,
+                                  ),
+                                  IconButton(
+                                    onPressed: () async =>
+                                        await todoController.markDoneTask(
+                                            todoController.taskList[index].id),
+                                    icon: todoController
+                                                .taskList[index].isDone ==
+                                            true
+                                        ? const Icon(Icons.check_box_outlined)
+                                        : const Icon(
+                                            Icons.check_box_outline_blank),
+                                    color: Colors.green,
+                                  )
+                                ],
+                              )),
+                        );
+                      }),
             ),
             floatingActionButton: FloatingActionButton(
               child: const Icon(Icons.add),
               onPressed: () async =>
-              await addTaskDialog(todoController, 'Add Todo', '', ''),
+                  await addTaskDialog(todoController, 'Add Todo', '', ''),
             ),
           );
         });
@@ -89,26 +93,26 @@ class _HomeState extends State<Home> {
         key: _formKey,
         child: Column(
           children: [
-          TextFormField(
-          controller: _taskController,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return 'Cannot be empty';
-            }
-            return null;
-          },
+            TextFormField(
+              controller: _taskController,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Cannot be empty';
+                }
+                return null;
+              },
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await todoController.addTodo(
+                    _taskController.text.trim(), false, id);
+                _taskController.clear();
+              },
+              child: const Text('Save'),
+            )
+          ],
         ),
-        ElevatedButton(
-            onPressed: () async {
-              await todoController.addTodo(
-                  _taskController.text.trim(), false, id);
-              _taskController.clear();
-            },
-            child: const Text('Save'),
-      )
-      ],
-    ),)
-    ,
+      ),
     );
   }
 }
